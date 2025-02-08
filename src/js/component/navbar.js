@@ -1,17 +1,47 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Link } from "react-router-dom";
+import { Context } from "../store/appContext";
 
 export const Navbar = () => {
-	return (
-		<nav className="navbar navbar-light bg-light mb-3">
-			<Link to="/">
-				<span className="navbar-brand mb-0 h1">React Boilerplate</span>
-			</Link>
-			<div className="ml-auto">
-				<Link to="/demo">
-					<button className="btn btn-primary">Check the Context in action</button>
-				</Link>
-			</div>
-		</nav>
-	);
+    const { store, actions } = useContext(Context);
+    
+    const deleteFavorite = (name) => {
+        actions.deleteFavorite(name);
+    };
+    
+    const clearFavorites = () => {
+        actions.clearFavorites(); // Debo crear una acción para limpiar favoritos PERO NO SE
+    };
+
+    return (
+        <nav className="navbar sticky-top navbar-light bg-light p-0">
+            <Link to="/">
+                <img 
+                    src="https://cdn.freebiesupply.com/logos/large/2x/star-wars-logo-png-transparent.png" 
+                    style={{ width: "6rem" }} 
+                    className="navbar-brand mx-5 p-0" 
+                    alt="Star Wars Logo"
+                />
+            </Link>
+            <div className="dropdown mx-5">
+                <button className="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                    Favoritos <span className="btn border py-1">{store.favoriteArray.length}</span>
+                </button>
+                <ul className="dropdown-menu dropdown-menu-end">
+                    {store.favoriteArray.length > 0 ? (
+                        <div>
+                            {store.favoriteArray.map((obj, index) => (
+                                <li className="dropdown-item d-flex justify-content-between align-items-center" key={index}>
+                                    <span>{obj.name}</span>
+                                    <button className="btn btn-sm btn-danger" onClick={() => deleteFavorite(obj.name)}>X</button>
+                                </li>
+                            ))}
+                        </div>
+                    ) : (
+                        <span className="dropdown-item">empty</span>
+                    )}
+                </ul>
+            </div>
+        </nav>
+    );
 };
